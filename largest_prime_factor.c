@@ -1,5 +1,5 @@
 #include <stdio.h>
-long x=600851475143;
+long x=600;
 int factors( long x);
 long prime(long x);
 long int array[25]={0};
@@ -23,9 +23,6 @@ for (long i=1;i<x/2+1;i++){
     
     }
 
-for(int i=0;i<=25;i++){
-    printf("%ld",array[i]);
-    }
 
 }
 
@@ -34,4 +31,4 @@ long prime(long x){for (int i=2;i<x/2+2;i++){
                     if (x % i == 0){
                         break;}
 if (i > x/2)
-    {printf("%s %ld\n","Prime",x);}}}
+{printf("%s %ld\n","Prime",x);}}}
