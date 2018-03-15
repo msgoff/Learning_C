@@ -1,20 +1,31 @@
 #include <stdio.h>
-int counter=1;
-int fibonacci(int x);
-int sum=0;
-int main(void){
-        
-        while (fibonacci(counter)<4000000){
-        counter +=1;
-        
-        if (fibonacci(counter) %2==0){
-            sum +=fibonacci(counter);}
-            }
-        
-        printf("%d",sum);
-}
+#include <stdlib.h>
 
-int fibonacci(int x){
-    if (x ==1 || x ==2){return 1;}else{return fibonacci(x-1)+fibonacci(x-2);}
-}
+int main(int argc,char *argv[]){
+	printf("%s \n","print the sum of even Fibonacci number less than a number");	
+	int total = 0;
+	int i = 0;
+	int place_holder = 0;
+	int passed_param = atoi(argv[1]);
 
+	int arr[2]={1,2};
+	
+	while (arr[1] < passed_param){
+	
+	
+	if (arr[1] % 2 == 0) {
+		total += arr[1];
+		printf("%d\n",arr[1]);
+	}
+
+	place_holder = arr[0]+arr[1];
+	arr[0]=arr[1];
+	arr[1] = place_holder;
+	
+	}
+	
+	printf("%d \n",total);	
+	
+
+	return 0;
+}
