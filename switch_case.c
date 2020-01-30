@@ -37,9 +37,10 @@ main ( int argc, char *argv[] )
 			case 'a':
 			case 'A':
 				printf("%c",letter);
+				break;
 			default:
 				printf("%d",i);
-			
+				break;
 		}
 	}
 	return EXIT_SUCCESS;
