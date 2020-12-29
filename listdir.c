@@ -1,56 +1,58 @@
- /* http://be-n.com/spw/you-can-list-a-million-files-in-a-directory-but-not-with-ls.html */
- 
- #define _GNU_SOURCE
-       #include <dirent.h>     /* Defines DT_* constants */
-       #include <fcntl.h>
-       #include <stdio.h>
-       #include <unistd.h>
-       #include <stdlib.h>
-       #include <sys/stat.h>
-       #include <sys/syscall.h>
+/* http://be-n.com/spw/you-can-list-a-million-files-in-a-directory-but-not-with-ls.html
+ */
 
-       #define handle_error(msg) \
-               do { perror(msg); exit(EXIT_FAILURE); } while (0)
+#define _GNU_SOURCE
+#include <dirent.h> /* Defines DT_* constants */
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
-       struct linux_dirent {
-           long           d_ino;
-           off_t          d_off;
-           unsigned short d_reclen;
-           char           d_name[];
-       };
+#define handle_error(msg)                                                      \
+  do {                                                                         \
+    perror(msg);                                                               \
+    exit(EXIT_FAILURE);                                                        \
+  } while (0)
 
-       #define BUF_SIZE 1024*1024*5
+struct linux_dirent {
+  long d_ino;
+  off_t d_off;
+  unsigned short d_reclen;
+  char d_name[];
+};
 
-       int
-       main(int argc, char *argv[])
-       {
-           int fd, nread;
-           char buf[BUF_SIZE];
-           struct linux_dirent *d;
-           int bpos;
-           char d_type;
+#define BUF_SIZE 1024 * 1024 * 5
 
-           fd = open(argc > 1 ? argv[1] : ".", O_RDONLY | O_DIRECTORY);
-           if (fd == -1)
-               handle_error("open");
+int main(int argc, char *argv[]) {
+  int fd, nread;
+  char buf[BUF_SIZE];
+  struct linux_dirent *d;
+  int bpos;
+  char d_type;
 
-           for ( ; ; ) {
-               nread = syscall(SYS_getdents, fd, buf, BUF_SIZE);
-               if (nread == -1)
-                   handle_error("getdents");
+  fd = open(argc > 1 ? argv[1] : ".", O_RDONLY | O_DIRECTORY);
+  if (fd == -1)
+    handle_error("open");
 
-               if (nread == 0)
-                   break;
+  for (;;) {
+    nread = syscall(SYS_getdents, fd, buf, BUF_SIZE);
+    if (nread == -1)
+      handle_error("getdents");
 
-               for (bpos = 0; bpos < nread;) {
-                   d = (struct linux_dirent *) (buf + bpos);
-                   //d_type = *(buf + bpos + d->d_reclen - 1);
-                   if(d->d_ino != 0){
-		   	printf("%s\n", d->d_name);
-		   }
-		   bpos += d->d_reclen;
-               }
-           }
+    if (nread == 0)
+      break;
 
-           exit(EXIT_SUCCESS);
-       }
+    for (bpos = 0; bpos < nread;) {
+      d = (struct linux_dirent *)(buf + bpos);
+      // d_type = *(buf + bpos + d->d_reclen - 1);
+      if (d->d_ino != 0) {
+        printf("%s\n", d->d_name);
+      }
+      bpos += d->d_reclen;
+    }
+  }
+
+  exit(EXIT_SUCCESS);
+}

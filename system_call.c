@@ -10,46 +10,41 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *         Author:  YOUR NAME (),
+ *   Organization:
  *
  * =====================================================================================
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-	int
-main ( int argc, char *argv[] )
-{
-	
-	if (argc < 2) return 1;
-	FILE *fd;
-	fd = popen(argv[1],"r");
-	if (!fd) return 1;
+int main(int argc, char *argv[]) {
 
-	char buffer[256];
-	size_t chread ;
-	size_t comalloc = 256;
-	size_t comlen = 0;
-	char *comout = malloc(comalloc);
+  if (argc < 2)
+    return 1;
+  FILE *fd;
+  fd = popen(argv[1], "r");
+  if (!fd)
+    return 1;
 
-	while ((chread = fread(buffer, 1, sizeof(buffer), fd)) != 0) {
-		if (comlen + chread >= comalloc){
-			comalloc *= 2;
-			comout = realloc(comout, comalloc);
-		}
-		memmove(comout+comlen,buffer,chread);
-		comlen += chread;
-	}
-	fwrite(comout, 1, comlen, stdout);
-    free(comout);
-    pclose(fd);
-    return 0;
+  char buffer[256];
+  size_t chread;
+  size_t comalloc = 256;
+  size_t comlen = 0;
+  char *comout = malloc(comalloc);
+
+  while ((chread = fread(buffer, 1, sizeof(buffer), fd)) != 0) {
+    if (comlen + chread >= comalloc) {
+      comalloc *= 2;
+      comout = realloc(comout, comalloc);
+    }
+    memmove(comout + comlen, buffer, chread);
+    comlen += chread;
+  }
+  fwrite(comout, 1, comlen, stdout);
+  free(comout);
+  pclose(fd);
+  return 0;
 }
-
-
-
-
